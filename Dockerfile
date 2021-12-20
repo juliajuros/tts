@@ -6,7 +6,6 @@ EXPOSE 5000
 RUN apt-get update && apt-get upgrade -y && apt-get install -y \
         python3 \
         python3-pip && \
-        espeak-ng \
         nano \
     apt-get clean
 RUN pip install Flask
