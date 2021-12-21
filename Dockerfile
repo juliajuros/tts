@@ -9,6 +9,6 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
         nano \
     apt-get clean
 RUN pip install Flask
-COPY main2.py .
+COPY main.py .
 
-CMD ['python3', './main2.py']
+CMD ['python3', './main.py']
