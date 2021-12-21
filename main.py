@@ -1,7 +1,7 @@
 import os
 
 from flask import Flask, jsonify, request
-import pyttsx3
+#import pyttsx3
 # nano main.py
 # python3 main.py
 
