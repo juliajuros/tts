@@ -27,5 +27,3 @@ def post_route():
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
-
-    #curl 192.168.0.81:5000/post -d '{"text": ["Andrzej","traktor"]}' -H 'Content-Type:application/json'
