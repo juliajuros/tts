@@ -1,9 +1,6 @@
-import os
-
+import os #chyba niepotrzebne?
 from flask import Flask, jsonify, request
-#import pyttsx3
-# nano main.py
-# python3 main.py
+import pyttsx3
 
 def tts(text):
     engine = pyttsx3.init()
@@ -18,7 +15,7 @@ def tts(text):
 app = Flask(__name__)
 @app.route('/')
 def home():
-    txt = 'stół z powyłamywanymi nogami, chrząszcz brzmi w trzcinie w szczebrzeszynie'
+    txt = 'stol z powylamywanymi nogami, chrzaszcz brzmi w trzcinie w szczebrzeszynie'
     return jsonify({"output-text": tts(txt)})
 @app.route('/json', methods=['POST'])
 def json_example():
@@ -29,10 +26,15 @@ def json_example():
     return jsonify({"output-text": output})
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port = os.getenv("PORT"))
-#curl in terminal: curl http://192.168.0.81:50000
+    app.run(host='0.0.0.0', port = 5000)
 
 #curl --header "Content-Type: application/json" \
 #  --request POST \
 #  --data '{"text":"dżdżownica i jeż"}' \
 #localhost:56733/json
+
+#curl --header "Content-Type: application/json"   --request POST   --data '{"text":"dżdżownica i jeż"}' localhost:5000/json
+
+#sudo docker rm -f
+#sudo docker build -t tts .
+#sudo docker run -p 5000:5000 --name TTS tts
