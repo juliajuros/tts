@@ -1,4 +1,4 @@
-import os #chyba niepotrzebne?
+import os
 from flask import Flask, jsonify, request
 import pyttsx3
 
@@ -8,14 +8,12 @@ def tts(text):
     engine.setProperty('volume', 1)
     engine.save_to_file(text, 'tekst.mp3')
     engine.runAndWait()
-    # fopen
-    # json
     return text
 
 app = Flask(__name__)
 @app.route('/')
 def home():
-    txt = 'stol z powylamywanymi nogami, chrzaszcz brzmi w trzcinie w szczebrzeszynie'
+    txt = 'stół z powyłamywanymi nogami, chrząszcz brzmi w trzcinie w szczebrzeszynie'
     return jsonify({"output-text": tts(txt)})
 @app.route('/json', methods=['POST'])
 def json_example():
@@ -27,11 +25,6 @@ def json_example():
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port = 5000)
-
-#curl --header "Content-Type: application/json" \
-#  --request POST \
-#  --data '{"text":"dżdżownica i jeż"}' \
-#localhost:56733/json
 
 #curl --header "Content-Type: application/json"   --request POST   --data '{"text":"dżdżownica i jeż"}' localhost:5000/json
 
