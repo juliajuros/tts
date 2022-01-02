@@ -1,6 +1,8 @@
 from flask import Flask, jsonify, request
+from scipy.io import wavfile
 import pyttsx3
-
+import numpy as np
+import os
 #from bitstring import BitArray
 
 #def binary(name):
@@ -9,33 +11,40 @@ import pyttsx3
     #   file1.write(b.bin)
 #    return b.bin
 
+
 def opeen(file):
-    with open(file, encoding ='unicode_escape') as f:
+    with open(file) as f:
         data = f.read()
     return data
 def tts(text, rate = 150, volume = 1):
     engine = pyttsx3.init()
     engine.setProperty('rate', rate)
     engine.setProperty('volume', volume)
-    #engine.save_to_file(text, 'tekst.wav')
-    engine.save_to_file(text, 'tekst.txt')
+    engine.save_to_file(text, 'tekst.wav')
+    # engine.save_to_file(text, 'tekst.mp3')
     engine.runAndWait()
+
+    samplerate, data = wavfile.read('tekst.wav')
+    np.savetxt("tekst.txt", data)
+
     data = opeen("tekst.txt")
-    #bin = binary('tekst.wav')
     return data
 
 app = Flask(__name__)
 @app.route('/')
 def home():
     txt = 'stol z powylamywanymi nogami, chrzaszcz brzmi w trzcinie w szczebrzeszynie'
-    return jsonify({"output-text": tts(txt)})
+    output = tts(txt)
+    return jsonify({"output-text": output})
+
+
 @app.route('/json', methods=['POST'])
 def json_example():
     req_data = request.get_json()
     txt = req_data['text']
-    volume = req_data['volume']
-    rate = req_data['rate']
-    output = tts(txt, rate, volume)
+    # volume = req_data['volume']
+    # rate = req_data['rate']
+    output = tts(txt)
     return jsonify({"output-text": output})
 
 if __name__ == "__main__":
