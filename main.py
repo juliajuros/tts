@@ -1,33 +1,19 @@
 from flask import Flask, jsonify, request
 from scipy.io import wavfile
-import pyttsx3
 import numpy as np
 import os
-#from bitstring import BitArray
 
-#def binary(name):
-#    b=BitArray(bytes=open(name,'rb').read())
-    #with open('binary.txt', 'w') as file1:
-    #   file1.write(b.bin)
-#    return b.bin
-
-
-def opeen(file):
-    with open(file) as f:
-        data = f.read()
-    return data
-def tts(text, rate = 150, volume = 1):
-    engine = pyttsx3.init()
-    engine.setProperty('rate', rate)
-    engine.setProperty('volume', volume)
-    engine.save_to_file(text, 'tekst.wav')
-    # engine.save_to_file(text, 'tekst.mp3')
-    engine.runAndWait()
+def tts(text, rate = 50, volume = 100):
+    command = f"espeak -a {volume} -s {rate} \'{text}\' --stdout > tekst.wav"
+    os.system(command)
 
     samplerate, data = wavfile.read('tekst.wav')
     np.savetxt("tekst.txt", data)
 
-    data = opeen("tekst.txt")
+
+    with open('tekst.txt', 'r') as fptr:
+        data = fptr.read()
+
     return data
 
 app = Flask(__name__)
@@ -42,9 +28,9 @@ def home():
 def json_example():
     req_data = request.get_json()
     txt = req_data['text']
-    # volume = req_data['volume']
-    # rate = req_data['rate']
-    output = tts(txt)
+    volume = req_data['volume']
+    rate = req_data['rate']
+    output = tts(txt, rate, volume)
     return jsonify({"output-text": output})
 
 if __name__ == "__main__":
@@ -52,7 +38,7 @@ if __name__ == "__main__":
 
 #curl --header "Content-Type: application/json" \
 #  --request POST \
-#  --data '{"text":"dżdżownica i jeż"}' \
+#  --data '{"text":"dżdżownica i jeż", "volume": 100, "rate": 50}' \
 #localhost:56733/json
 
 #curl --header "Content-Type: application/json"   --request POST   --data '{"text":"dżdżownica i jeż"}' localhost:5000/json
