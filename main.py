@@ -11,7 +11,7 @@ def binary(name):
   
 def tts(text, rate = 50, volume = 100):
     text = ' '.join(text)
-    command = f"espeak -v pl-a {volume} -s {rate} \'{text}\' --stdout > tekst.wav"
+    command = f"espeak -v pl -a {volume} -s {rate} \'{text}\' --stdout > tekst.wav"
     os.system(command)
     bin = binary('tekst.wav')
     return bin
