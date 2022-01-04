@@ -1,24 +1,23 @@
 from flask import Flask, jsonify, request
-from scipy.io import wavfile
-import numpy as np
 import os
 from flask_cors import CORS
-from bitstring import BitArray
+import base64
 
-app = Flask(__name__)
-CORS(app)
 def binary(name):
-    b=BitArray(bytes=open(name,'rb').read())
-    with open('binary.txt', 'w') as file1:
-       file1.write(b.bin)
-    return b.bin
+    with open(name, "rb") as image_file:
+        encoded_string = base64.b64encode(image_file.read())
+
+    return encoded_string.decode('ascii')
+  
 def tts(text, rate = 50, volume = 100):
-    command = f"espeak -a {volume} -s {rate} \'{text}\' --stdout > tekst.wav"
+    text = ' '.join(text)
+    command = f"espeak -v pl-a {volume} -s {rate} \'{text}\' --stdout > tekst.wav"
     os.system(command)
     bin = binary('tekst.wav')
     return bin
 
 app = Flask(__name__)
+CORS(app)
 @app.route('/')
 def home():
     txt = 'stol z powylamywanymi nogami, chrzaszcz brzmi w trzcinie w szczebrzeszynie'
@@ -30,9 +29,10 @@ def home():
 def json_example():
     req_data = request.get_json()
     txt = req_data['text']
-    volume = req_data['volume']
-    rate = req_data['rate']
-    output = tts(txt, rate, volume)
+    print(txt)
+    # volume = req_data['volume']
+    # rate = req_data['rate']
+    output = tts(txt)
     return jsonify({"output-text": output})
 
 if __name__ == "__main__":
