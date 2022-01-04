@@ -3,6 +3,7 @@ ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 
 WORKDIR .
 COPY requirements.txt .
+COPY main.py .
 #EXPOSE 5000
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get upgrade -y && apt-get install -y \
