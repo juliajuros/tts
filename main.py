@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request
 import os
 from flask_cors import CORS
 import base64
+import logging
 
 def binary(name):
     with open(name, "rb") as image_file:
@@ -9,7 +10,7 @@ def binary(name):
 
     return encoded_string.decode('ascii')
   
-def tts(text, rate = 50, volume = 100):
+def tts(text, rate = 175, volume = 100):
     text = ' '.join(text)
     command = f"espeak -v pl -a {volume} -s {rate} \'{text}\' --stdout > tekst.wav"
     os.system(command)
@@ -18,6 +19,8 @@ def tts(text, rate = 50, volume = 100):
 
 app = Flask(__name__)
 CORS(app)
+logging.basicConfig(level=logging.DEBUG)
+
 @app.route('/')
 def home():
     txt = 'stol z powylamywanymi nogami, chrzaszcz brzmi w trzcinie w szczebrzeszynie'
@@ -30,21 +33,10 @@ def json_example():
     req_data = request.get_json()
     txt = req_data['text']
     print(txt)
-    # volume = req_data['volume']
-    # rate = req_data['rate']
+    volume = req_data['volume']
+    rate = req_data['rate']
     output = tts(txt)
     return jsonify({"output-text": output})
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port = 5000)
-
-#curl --header "Content-Type: application/json" \
-#  --request POST \
-#  --data '{"text":"dżdżownica i jeż", "volume": 100, "rate": 50}' \
-#localhost:56733/json
-
-#curl --header "Content-Type: application/json"   --request POST   --data '{"text":"dżdżownica i jeż"}' localhost:5000/json
-
-#sudo docker rm -f
-#sudo docker build -t tts .
-#sudo docker run -p 5000:5000 --name TTS tts
