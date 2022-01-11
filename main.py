@@ -29,10 +29,19 @@ def home():
 
 
 @app.route('/json', methods=['POST'])
+
 def json_example():
     req_data = request.get_json()
     txt = req_data['text']
-    print(txt)
+    volume = req_data['volume']
+    rate = req_data['rate']
+    out = []
+    for t in txt:
+        temp = tts(t)
+        out.append(temp)
+    app.logger.info('Data Received: "{data}"'.format(data=req_data))
+    return jsonify({"output-text": out})
+
     volume = req_data['volume']
     rate = req_data['rate']
     output = tts(txt)
